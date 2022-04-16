@@ -77,6 +77,7 @@ class _MoneyChartState extends State<MoneyChart> {
         backgroundColor: Colors.black,
       ),
       body: _buildBody(),
+      resizeToAvoidBottomInset: false,
     );
   }
 
@@ -147,23 +148,29 @@ class _SecondScreenInfoState extends State<SecondScreenInfo> {
         centerTitle: true,
         backgroundColor: Colors.black,
       ),
-      body: Column(
-        children: [
-          Flexible(
-            child: dailyDate(),
-            flex: 5,
+      body: SingleChildScrollView(
+        physics: ClampingScrollPhysics(),
+        child: Container(
+          height: 100,
+          child: Column(
+            children: [
+              // Flexible(
+              //   child: dailyDate(),
+              //   flex: 5,
+              // ),
+              Flexible(
+                flex: 50,
+                fit: FlexFit.tight,
+                child: bodyBuild(),
+              ),
+              Flexible(
+                flex: 50,
+                fit: FlexFit.tight,
+                child: enterExpense(),
+              ),
+            ],
           ),
-          Flexible(
-            flex: 50,
-            fit: FlexFit.tight,
-            child: bodyBuild(),
-          ),
-          Flexible(
-            flex: 50,
-            fit: FlexFit.tight,
-            child: enterExpense(),
-          ),
-        ],
+        ),
       ),
     );
   }
@@ -174,7 +181,7 @@ class _SecondScreenInfoState extends State<SecondScreenInfo> {
         Column(
           children: [
             Text(widget.balanceState.dailyConsumption.toString(),
-                style: TextStyle(color: Colors.black, fontSize: 40)),
+                style: TextStyle(color: Colors.black, fontSize: 90)),
           ],
           mainAxisAlignment: MainAxisAlignment.center,
         ),
@@ -206,15 +213,19 @@ class _SecondScreenInfoState extends State<SecondScreenInfo> {
         enabledBorder: OutlineInputBorder(
           borderSide: BorderSide(color: Colors.white, width: 0),
         ),
-        hintText: 'input expense',
-        hintStyle: TextStyle(fontSize: 40, color: Colors.black),
+        hintText: 'input',
+        hintStyle: TextStyle(fontSize: 40),
       ),
       // showCursor: false,
       style: TextStyle(fontSize: 40),
       controller: textController,
       onSubmitted: (_) {
         var expenseValue = getValueForExpenseTextField();
+        var datetime = new DateTime.now().millisecondsSinceEpoch;
         widget.balanceState.dailyConsumption -= expenseValue;
+
+        DBProvider.db.insertHistoryNote(
+            HistoryNotes(datetime, expenseValue, 'template for text'));
       },
     );
   }

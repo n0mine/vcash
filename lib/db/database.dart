@@ -17,7 +17,7 @@ class DBProvider {
       onCreate: (db, version) {
         db.execute('DROP TABLE IF EXISTS $tableName');
         db.execute(
-            'CREATE TABLE $tableName(id INTEGER PRIMARY KEY, datetime INTEGER, spendAmount INTEGER, spendNote TEXT)');
+            'CREATE TABLE $tableName(datetime INTEGER PRIMARY KEY, spendAmount INTEGER, spendNote TEXT)');
       },
       version: 1,
     );
@@ -33,10 +33,9 @@ class DBProvider {
   Future<List<HistoryNotes>> getHistoryNotes(int key) async {
     Database db = await this.database;
     List<Map<String, dynamic>> maps =
-        await db.query(tableName, where: 'id = ?', whereArgs: [key]);
+        await db.query(tableName, where: 'datetime = ?', whereArgs: [key]);
     return List.generate(maps.length, (i) {
       return HistoryNotes(
-        maps[i]['id'],
         maps[i]['datetime'],
         maps[i]['spendAmount'],
         maps[i]['spendNote'],
@@ -46,6 +45,6 @@ class DBProvider {
 
   Future<int> removeHistoryNote(int key) async {
     Database db = await this.database;
-    return await db.delete(tableName, where: 'id = ?', whereArgs: [key]);
+    return await db.delete(tableName, where: 'datetime = ?', whereArgs: [key]);
   }
 }
