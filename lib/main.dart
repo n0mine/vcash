@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:money_chart/db/db.dart';
+import 'package:money_chart/db/database.dart';
 import 'package:money_chart/model/history_notes.dart';
 import 'package:money_chart/model/balance_state.dart';
 
