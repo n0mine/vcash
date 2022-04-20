@@ -140,39 +140,62 @@ class _SecondScreenInfoState extends State<SecondScreenInfo> {
     //     ModalRoute.of(context)!.settings.arguments as BalanceState;
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text(
-          "DAILY",
-          style: TextStyle(color: Colors.white),
+        appBar: AppBar(
+          title: const Text(
+            "DAILY",
+            style: TextStyle(color: Colors.white),
+          ),
+          centerTitle: true,
+          backgroundColor: Colors.black,
         ),
-        centerTitle: true,
-        backgroundColor: Colors.black,
-      ),
-      body: SingleChildScrollView(
-        physics: ClampingScrollPhysics(),
-        child: Container(
-          height: 100,
+        body: Container(
+          padding: EdgeInsets.symmetric(horizontal: 18, vertical: 8),
+          // margin: EdgeInsets,
+          decoration: ShapeDecoration(
+            shape: StadiumBorder(),
+            color: Theme.of(context).scaffoldBackgroundColor,
+          ),
           child: Column(
+            mainAxisSize: MainAxisSize.max,
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              // Flexible(
-              //   child: dailyDate(),
-              //   flex: 5,
-              // ),
-              Flexible(
-                flex: 50,
-                fit: FlexFit.tight,
-                child: bodyBuild(),
-              ),
-              Flexible(
-                flex: 50,
-                fit: FlexFit.tight,
-                child: enterExpense(),
-              ),
+              Expanded(child: bodyBuild()),
+              Row(
+                children: [
+                  Icon(Icons.monetization_on, size: 35),
+                  Expanded(
+                    child: Container(
+                      child: TextField(
+                        controller: textController,
+                        decoration: InputDecoration(
+                          isDense: true,
+                          hintText: 'Input expense',
+                          hintStyle: TextStyle(
+                            fontSize: 40,
+                            color: Colors.grey,
+                            height: 1,
+                          ),
+                          border: InputBorder.none,
+                        ),
+                        style: TextStyle(fontSize: 38),
+                        onSubmitted: (_) {
+                          var expenseValue = getValueForExpenseTextField();
+                          var datetime =
+                              new DateTime.now().millisecondsSinceEpoch;
+                          widget.balanceState.dailyConsumption -= expenseValue;
+
+                          DBProvider.db.insertHistoryNote(HistoryNotes(
+                              datetime, expenseValue, 'template for text'));
+                        },
+                      ),
+                      padding: EdgeInsets.all(20),
+                    ),
+                  ),
+                ],
+              )
             ],
           ),
-        ),
-      ),
-    );
+        ));
   }
 
   Widget bodyBuild() {
